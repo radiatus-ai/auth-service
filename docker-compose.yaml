@@ -20,26 +20,25 @@ services:
       dockerfile: ./Dockerfile
       context: .
     environment:
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
+      - POSTGRES_SERVER=${POSTGRES_SERVER}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
       - JWT_SECRET=${JWT_SECRET}
       - GOOGLE_CLIENT_IDS=${GOOGLE_CLIENT_IDS}
       - PORT=${PORT}
     ports:
-      - 8000:8080
+      # apis on 8000, auth on 8080
+      - 8080:8080
     depends_on:
       database:
         condition: service_healthy
 
 
   # for building an amd compat image for GKE
-  api_deploy:
+  api-deploy:
     platform: linux/amd64
     build:
       dockerfile: ./Dockerfile
       context: .
-
-
