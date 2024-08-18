@@ -1,0 +1,45 @@
+services:
+  database:
+    image: pgvector/pgvector:pg16
+    ports:
+      - 6432:5432
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+  # testing the build locally
+  api:
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - JWT_SECRET=${JWT_SECRET}
+      - GOOGLE_CLIENT_IDS=${GOOGLE_CLIENT_IDS}
+      - PORT=${PORT}
+    ports:
+      - 8000:8080
+    depends_on:
+      database:
+        condition: service_healthy
+
+
+  # for building an amd compat image for GKE
+  api_deploy:
+    platform: linux/amd64
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+
+

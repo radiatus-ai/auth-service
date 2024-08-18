@@ -1,29 +1,25 @@
+FROM golang:1.22-alpine AS builder
 
+# Set the working directory
+WORKDIR /app
 
+COPY go.mod go.sum ./
+RUN go mod download
 
-from fastapi import Request, HTTPException
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-import httpx
+COPY . .
 
-security = HTTPBearer()
+# Build the application
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main cmd/server/main.go
 
-async def verify_token(token: str) -> dict:
-    async with httpx.AsyncClient() as client:
-        response = await client.post(
-            "http://auth-service/verify-token",
-            json={"token": token}
-        )
-        if response.status_code == 200:
-            return response.json()
-        else:
-            raise HTTPException(status_code=401, detail="Invalid token")
+# Step 2: Create the final, minimal image
+FROM alpine:latest
 
-async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    token = credentials.credentials
-    user_data = await verify_token(token)
-    return user_data
+# Set the working directory
+WORKDIR /root/
 
-# Use this as a dependency in your routes
-# @app.get("/protected-route")
-# async def protected_route(current_user: dict = Depends(get_current_user)):
-#     return {"message": "This is a protected route", "user": current_user}
+# Copy the binary from the builder stage
+COPY --from=builder /app/main .
+COPY migrations migrations
+
+# Command to run the executable
+CMD ["./main"]

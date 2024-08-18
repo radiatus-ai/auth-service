@@ -1,10 +1,16 @@
 .PHONY: build run test clean
 
+build-docker:
+	docker build -t auth-service .
+
 build:
 	go build -o bin/server cmd/server/main.go
 
 start:
 	go run cmd/server/main.go
+
+start-docker:
+	docker compose --env-file .env.docker-local up api database --build
 
 test:
 	go test ./...
@@ -18,8 +24,3 @@ migrate-up:
 migrate-down:
 	migrate -path migrations -database "$(DATABASE_URL)" down
 
-docker-build:
-	docker build -t auth-service .
-
-docker-run:
-	docker run -p 8080:8080 auth-service

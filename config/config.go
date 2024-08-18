@@ -18,7 +18,8 @@ type Config struct {
 
 func Load() (*Config, error) {
 	if err := godotenv.Load(); err != nil {
-		return nil, fmt.Errorf("error loading .env file: %w", err)
+		// env file not used in deployed environments, don't error
+		// return nil, fmt.Errorf("error loading .env file: %w", err)
 	}
 
 	return &Config{
