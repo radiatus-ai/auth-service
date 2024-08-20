@@ -6,7 +6,9 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/radiatus-ai/auth-service/internal/auth"
+	"github.com/radiatus-ai/auth-service/internal/model"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -25,6 +27,15 @@ func (m *mockAuthService) VerifyToken(token string) (string, error) {
 		return "user_123", nil
 	}
 	return "", auth.ErrInvalidToken
+}
+
+func (m *mockAuthService) GetUserByID(userID string) (*model.User, error) {
+	id, _ := uuid.Parse(userID)
+	return &model.User{ID: id}, nil
+}
+
+func (m *mockAuthService) LoginGoogle(code string) (*auth.UserData, error) {
+	return &auth.UserData{}, nil
 }
 
 func TestAuthMiddleware(t *testing.T) {

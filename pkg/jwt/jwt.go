@@ -9,7 +9,7 @@ import (
 
 var (
 	ErrInvalidToken = errors.New("invalid token")
-	ErrExpiredToken = errors.New("token is expired")
+	ErrExpiredToken = errors.New("expired token")
 )
 
 type Claims struct {

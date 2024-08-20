@@ -8,12 +8,12 @@ import (
 )
 
 type User struct {
-	ID            uuid.UUID      `gorm:"type:uuid;primary_key;" json:"id"`
-	Email         string         `gorm:"unique;not null" json:"email"`
-	GoogleID      string         `gorm:"unique" json:"google_id,omitempty"`
-	Password      string         `json:"-"` // Excluded from JSON output
-	CreatedAt     time.Time      `json:"created_at"`
-	UpdatedAt     time.Time      `json:"updated_at"`
+	ID       uuid.UUID `gorm:"type:uuid;primary_key;" json:"id"`
+	Email    string    `gorm:"unique;not null" json:"email"`
+	GoogleID string    `gorm:"unique" json:"google_id,omitempty"`
+	// Password      string         `json:"-"` // Excluded from JSON output
+	CreatedAt     time.Time      `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt     time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
 	Organizations []Organization `gorm:"many2many:user_organizations;" json:"organizations,omitempty"`
 }
 

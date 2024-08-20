@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"log"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -30,7 +31,13 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 }
 
 func (r *userRepository) Create(user *model.User) error {
-	return r.db.Create(user).Error
+	result := r.db.Create(user)
+	if result.Error != nil {
+		log.Printf("SQL: %v\n", result.Statement.SQL.String())
+		log.Printf("Vars: %v\n", result.Statement.Vars)
+		return result.Error
+	}
+	return result.Error
 }
 
 func (r *userRepository) GetByEmail(email string) (*model.User, error) {

@@ -88,7 +88,7 @@ func (s *service) LoginGoogle(token string) (*UserData, error) {
 
 			// Create new organization
 			org := &model.Organization{
-				Name: email, // You might want to use a different naming convention
+				Name: email, // todo: need to change this to a different naming convention
 			}
 			if err := s.orgRepo.Create(org); err != nil {
 				log.Printf("Failed to create organization: %v", err)
