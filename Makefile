@@ -36,4 +36,4 @@ deploy: build-docker tag upload
 					--execution-environment=gen2 \
 					--region=us-central1 \
 					--project=rad-dev-platapi-4r64 \
-					&& gcloud run services update-traffic auth-service --to-latest --region us-central1
+					&& gcloud run services update-traffic auth-service --to-latest --region us-central1 --project=rad-dev-platapi-4r64

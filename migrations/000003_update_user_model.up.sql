@@ -1,3 +1,2 @@
 ALTER TABLE users
-   ADD COLUMN IF NOT EXISTS new_column VARCHAR(255),
-   ALTER COLUMN existing_column TYPE INTEGER;
+   DROP COLUMN IF EXISTS password;
